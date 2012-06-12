@@ -75,9 +75,7 @@ def multipolyfit(xs, y, deg, full=False, model_out=False, powers_out=False):
             return sum([coeff * (xs**sum(p)).prod()
                                  for p, coeff in zip(powers, beta)])
         return model
-
+    if powers_out:
+        return (beta,
+                list(itertools.combinations_with_replacement(generators, deg)))
     return beta
-
-def multipolyfit_model(args, **kwargs):
-    kwargs['full'] = False
-    beta = multipolyfit(*args, **kwargs)
