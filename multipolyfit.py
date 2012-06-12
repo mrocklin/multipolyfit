@@ -57,25 +57,39 @@ def multipolyfit(xs, y, deg, full=False, model_out=False, powers_out=False):
                             for i in range(num_covariates+1)]
 
     # All combinations of degrees
-    powers = itertools.combinations_with_replacement(generators, deg)
+    powers = map(sum, itertools.combinations_with_replacement(generators, deg))
 
     # Raise data to specified degree pattern, stack in order
-    A = hstack(asarray([as_tall((xs**sum(p)).prod(1)) for p in powers]))
+    A = hstack(asarray([as_tall((xs**p).prod(1)) for p in powers]))
 
     beta = linalg.lstsq(A, y)[0]
 
     if model_out:
-        # Create a function that takes in many x values
-        # and returns an approximate y value
-        def model(*args):
-            if len(args)!=(num_covariates):
-                raise ValueError("Expected %d inputs"%num_covariates)
-            xs = asarray((1,) + args)
-            powers = itertools.combinations_with_replacement(generators, deg)
-            return sum([coeff * (xs**sum(p)).prod()
-                                 for p, coeff in zip(powers, beta)])
-        return model
+        return mk_model(beta, powers)
+
     if powers_out:
-        return (beta,
-                list(itertools.combinations_with_replacement(generators, deg)))
+        return beta, powers
     return beta
+
+def mk_model(beta, powers):
+    """ Create a callable python function out of beta/powers from multipolyfit
+
+    This function is callable from within multipolyfit using the model_out flag
+    """
+    # Create a function that takes in many x values
+    # and returns an approximate y value
+    def model(*args):
+        num_covariates = len(powers[0]) - 1
+        if len(args)!=(num_covariates):
+            raise ValueError("Expected %d inputs"%num_covariates)
+        xs = asarray((1,) + args)
+        return sum([coeff * (xs**p).prod()
+                             for p, coeff in zip(powers, beta)])
+    return model
+
+def mk_sympy_function(beta, powers):
+    from sympy import symbols, Add, Mul, S
+    num_covariates = len(powers[0]) - 1
+    xs = (S.One,) + symbols('x0:%d'%num_covariates)
+    return Add(*[coeff * Mul(*[x**deg for x, deg in zip(xs, power)])
+                        for power, coeff in zip(powers, beta)])
