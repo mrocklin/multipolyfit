@@ -10,8 +10,6 @@ def test_multipolyfit():
     assert np.linalg.norm(betas - np.asarray((1,1,0))) < .0001
 
 
-
-
 def test_model():
     xs = np.array([[1,2,3,4,5], [1,-1,1,-1,1]]).T
     y = np.array([2,2,4,4,6])
@@ -34,4 +32,3 @@ def test_sympy():
         assert symbol_sets == {tuple(), (x0,), (x1,), (x0, x1)}
     except ImportError:
         pass
-

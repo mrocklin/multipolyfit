@@ -4,6 +4,7 @@ import itertools
 def basis_vector(n, i):
     """ Return an array like [0, 0, ..., 1, ..., 0, 0]
 
+    >>> from multipolyfit.core import basis_vector
     >>> basis_vector(3, 1)
     array([0, 1, 0])
     >>> basis_vector(5, 4)
