@@ -40,3 +40,14 @@ Instead of a sparse solution like
 
 To obtain sparse solutions (like the second) where near-zero elements are
 eliminated you should probably look into L1 regularization
+
+
+Sorry
+-----
+
+But I rarely respond to questions about this repository.  It is oddly popular 
+but the implementation is pretty dense and so this project generates a large number
+of reasonable questions.  Unfortunately I don't have time to respond to all of these.
+
+I would care more about this project if it contained a useful algorithm.  It doesn't.  
+Read the disclaimer above.
