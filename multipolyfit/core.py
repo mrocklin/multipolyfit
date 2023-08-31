@@ -58,7 +58,7 @@ def multipolyfit(xs, y, deg, full=False, model_out=False, powers_out=False):
                             for i in range(num_covariates+1)]
 
     # All combinations of degrees
-    powers = map(sum, itertools.combinations_with_replacement(generators, deg))
+    powers = [sum(x) for x in itertools.combinations_with_replacement(generators, deg)]
 
     # Raise data to specified degree pattern, stack in order
     A = hstack(asarray([as_tall((xs**p).prod(1)) for p in powers]))
